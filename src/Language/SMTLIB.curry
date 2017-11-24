@@ -6,7 +6,7 @@
 --- and covers most parts of the language description.
 ---
 --- @author  Jan Tikovsky
---- @version October 2017
+--- @version November 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB
   ( module Language.SMTLIB.Goodies
@@ -19,4 +19,4 @@ import Language.SMTLIB.Goodies
 import Language.SMTLIB.Parser
 import Language.SMTLIB.Pretty
 import Language.SMTLIB.Scanner
-import Language.SMTLIB.Types
+import Language.SMTLIB.Types hiding (Echo)

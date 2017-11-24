@@ -2,11 +2,19 @@
 --- This module provides some goodies and utility functions for SMT-LIB.
 ---
 --- @author  Jan Tikovsky
---- @version October 2017
+--- @version November 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Goodies where
 
 import Language.SMTLIB.Types
+
+infixl 7 *%
+infixl 6 +%, -%
+infix  4 =%, /=%, <%, >%, <=%, >=%
+
+--- Declare a list of variables
+declVars :: [(Symbol, Sort)] -> [Command]
+declVars = map (uncurry DeclareConst)
 
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT terms
@@ -28,6 +36,10 @@ tchar = TConst . Str . (: [])
 tvar :: Int -> Term
 tvar vi = tcomb (var2SMT vi) []
 
+--- Construct SMT-LIB term from a string
+var :: String -> Term
+var str = tcomb str []
+
 --- Construct SMT-LIB constructor term
 tcomb :: Ident -> [Term] -> Term
 tcomb i ts = TComb (Id i) ts
@@ -45,6 +57,22 @@ forAll vs ss t = case vs of
 --- Negate given SMT-LIB term
 tneg :: Term -> Term
 tneg t = tcomb "not" [t]
+
+--- Add two SMT-LIB terms
+(+%) :: Term -> Term -> Term
+t1 +% t2 = tcomb "+" [t1, t2]
+
+--- Subtract an SMT-LIB term from another one
+(-%) :: Term -> Term -> Term
+t1 -% t2 = tcomb "-" [t1, t2]
+
+--- Multiply two SMT-LIB terms
+(*%) :: Term -> Term -> Term
+t1 *% t2 = tcomb "*" [t1, t2]
+
+--- Divide an SMT-LIB term by another one
+(/%) :: Term -> Term -> Term
+t1 /% t2 = tcomb "/" [t1, t2]
 
 --- Constrain two SMT-LIB terms to be equal
 (=%) :: Term -> Term -> Term
@@ -87,20 +115,24 @@ noneOf idx dv qis = snd $ foldr ineq (idx, []) qis
 --------------------------------------------------------------------------------
 
 --- Construct an SMT-LIB sort
-tyComb :: Ident -> [Sort] -> Sort
-tyComb i ss = SComb i ss
+scomb :: Ident -> [Sort] -> Sort
+scomb i ss = SComb i ss
 
 --- Representation of 'Ordering' type as SMT-LIB sort
-tyOrdering :: Sort
-tyOrdering = tyComb "Ordering" []
+orderingSort :: Sort
+orderingSort = scomb "Ordering" []
 
---- Representation of a functional type as SMT-LIB sort
-tyFun :: [Sort] -> Sort
-tyFun = tyComb "Fun"
+--- Representation of 'Int' type as SMT-LIB sort
+intSort :: Sort
+intSort = scomb "Int" []
+
+--- Representation of '->' type constructor as SMT-LIB sort constructor
+funSC :: [Sort] -> Sort
+funSC = scomb "Fun"
 
 --- Generate a `nop` SMT-LIB command
 nop :: Command
-nop = Echo ""
+nop = echo ""
 
 --- Generate an `assert` SMT-LIB command
 assert :: [Term] -> Command
@@ -120,6 +152,18 @@ isDeclData cmd = case cmd of
   DeclareDatatype _ _ -> True
   DeclareDatatypes  _ -> True
   _                   -> False
+
+--- Is given SMT-LIB command an 'Echo'
+isEcho :: Command -> Bool
+isEcho cmd = case cmd of
+  Echo _ -> True
+  _      -> False
+
+--- Smart constructor for the 'Echo' SMT-LIB command
+--- marking every 'Echo' command with an initial '@' character
+--- which is necessary to recognize 'Echo's during parsing
+echo :: String -> Command
+echo str = Echo ('@' : str)
 
 --- Transform a FlatCurry variable index into an SMT-LIB symbol
 var2SMT :: Int -> Symbol
