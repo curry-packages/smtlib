@@ -2,7 +2,7 @@
 --- This module provides some goodies and utility functions for SMT-LIB.
 ---
 --- @author  Jan Tikovsky
---- @version November 2017
+--- @version December 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Goodies where
 
@@ -164,6 +164,10 @@ isEcho cmd = case cmd of
 --- which is necessary to recognize 'Echo's during parsing
 echo :: String -> Command
 echo str = Echo ('@' : str)
+
+--- Smart constructor to generate a comment in an SMT-LIB script
+comment :: String -> Command
+comment = Comment
 
 --- Transform a FlatCurry variable index into an SMT-LIB symbol
 var2SMT :: Int -> Symbol

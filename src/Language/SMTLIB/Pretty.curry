@@ -2,7 +2,7 @@
 --- This module provides a pretty printer for the SMT-LIB language (v2.6).
 ---
 --- @author  Jan Tikovsky
---- @version September 2017
+--- @version December 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Pretty where
 
@@ -160,7 +160,9 @@ instance Pretty PropLit where
   pretty (Not sym) = parent [text "not", text sym]
 
 instance Pretty Command where
-  pretty = parent . ppCmd
+  pretty cmd = case cmd of
+    Comment comment -> semi <+> text comment
+    _               -> parent $ ppCmd cmd
 
 instance Pretty SortDecl where
   pretty (SortDecl sym a) = parent [text sym, int a]

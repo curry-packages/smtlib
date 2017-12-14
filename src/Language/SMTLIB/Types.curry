@@ -5,7 +5,7 @@
 --- and covers most parts of the language description.
 ---
 --- @author  Jan Tikovsky
---- @version September 2017
+--- @version December 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Types where
 
@@ -191,6 +191,9 @@ data Command = Assert              Term
              | SetInfo             Attribute
              | SetLogic            Logic
              | SetOption           Option
+               -- no official command, but useful for the generation
+               -- of line comments in SMT-LIB scripts
+             | Comment             String
   deriving (Eq, Show)
 
 --- Logics provided by the SMT-LIB Standard
