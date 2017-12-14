@@ -15,6 +15,7 @@
         "kics2": ">= 2.0.0"
     },
     "exportedModules": [ "Language.SMTLIB",
+                         "Language.SMTLIB.Files",
                          "Language.SMTLIB.Goodies",
                          "Language.SMTLIB.Parser",
                          "Language.SMTLIB.Pretty",

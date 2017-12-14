@@ -9,6 +9,8 @@ Standard (http://smtlib.cs.uiowa.edu/papers/smt-lib-reference-v2.6-r2017-07-18.p
 
 The package currently includes:
 
+* `Language.SMTLIB.Files`: This module provides file operations for SMT-LIB
+  scripts.
 * `Language.SMTLIB.Goodies`: This module provides smart constructors and some
   useful auxiliary functions for SMT-LIB data terms.
 * `Language.SMTLIB.Parser`: This module provides a parser generating SMT-LIB

@@ -6,17 +6,19 @@
 --- and covers most parts of the language description.
 ---
 --- @author  Jan Tikovsky
---- @version November 2017
+--- @version December 2017
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB
-  ( module Language.SMTLIB.Goodies
+  ( module Language.SMTLIB.Files
+  , module Language.SMTLIB.Goodies
   , module Language.SMTLIB.Pretty
   , module Language.SMTLIB.Types
   , SMTParser, parseCmdRsps
   ) where
 
+import Language.SMTLIB.Files
 import Language.SMTLIB.Goodies
 import Language.SMTLIB.Parser
 import Language.SMTLIB.Pretty
 import Language.SMTLIB.Scanner
-import Language.SMTLIB.Types hiding (Echo)
+import Language.SMTLIB.Types   hiding (Echo)
