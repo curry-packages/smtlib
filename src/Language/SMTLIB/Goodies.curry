@@ -58,6 +58,10 @@ forAll vs ss t = case vs of
 tneg :: Term -> Term
 tneg t = tcomb "-" [t]
 
+--- Absolute value of an SMT-LIB term
+tabs :: Term -> Term
+tabs t = tcomb "abs" [t]
+
 --- Add two SMT-LIB terms
 (+%) :: Term -> Term -> Term
 t1 +% t2 = tcomb "+" [t1, t2]
@@ -101,6 +105,14 @@ t1 >=% t2 = tcomb ">=" [t1, t2]
 --- Combine a list of SMT-LIB terms using a conjunction
 tand :: [Term] -> Term
 tand = tcomb "and"
+
+--- Combine a list of SMT-LIB terms using a disjunction
+tor :: [Term] -> Term
+tor = tcomb "or"
+
+--- Logical implication
+(=>) :: Term -> Term -> Term
+t1 => t2 = tcomb "=>" [t1, t2]
 
 --- Logical negation of an SMT-LIB term
 tnot :: Term -> Term
