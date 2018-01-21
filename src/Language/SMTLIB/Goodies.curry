@@ -111,12 +111,21 @@ tor :: [Term] -> Term
 tor = tcomb "or"
 
 --- Logical implication
-(=>) :: Term -> Term -> Term
-t1 => t2 = tcomb "=>" [t1, t2]
+(==>) :: Term -> Term -> Term
+t1 ==> t2 = tcomb "=>" [t1, t2]
 
 --- Logical negation of an SMT-LIB term
 tnot :: Term -> Term
 tnot t = tcomb "not" [t]
+
+instance Num Term where
+  t1 + t2 = t1 +% t2
+  t1 - t2 = t1 -% t2
+  t1 * t2 = t1 *% t2
+
+  negate  = tneg
+  abs     = tabs
+  fromInt = tint
 
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT sorts
