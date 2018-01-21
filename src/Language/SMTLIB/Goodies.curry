@@ -2,7 +2,7 @@
 --- This module provides some goodies and utility functions for SMT-LIB.
 ---
 --- @author  Jan Tikovsky
---- @version December 2017
+--- @version January 2018
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Goodies where
 
@@ -101,14 +101,6 @@ t1 >=% t2 = tcomb ">=" [t1, t2]
 --- Combine a list of SMT-LIB terms using a conjunction
 tand :: [Term] -> Term
 tand = tcomb "and"
-
---- Constrain an SMT variable to be distinct from the given SMT constructors
-noneOf :: Int -> Int -> [(QIdent, [Sort])] -> [Term]
-noneOf idx dv qis = snd $ foldr ineq (idx, []) qis
-  where ineq (qi, ss) (vi, cs) =
-          let vn = vi - length ss
-              vs = [vi, vi - 1 .. vn + 1]
-          in (vn, forAll vs ss (tvar dv /=% qtcomb qi (map tvar vs)) : cs)
 
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT sorts
