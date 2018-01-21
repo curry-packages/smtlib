@@ -54,9 +54,9 @@ forAll vs ss t = case vs of
   [] -> t
   _  -> Forall (zipWith SV (map var2SMT vs) ss) t
 
---- Negate given SMT-LIB term
+--- Negate given numeral SMT-LIB term
 tneg :: Term -> Term
-tneg t = tcomb "not" [t]
+tneg t = tcomb "-" [t]
 
 --- Add two SMT-LIB terms
 (+%) :: Term -> Term -> Term
@@ -101,6 +101,10 @@ t1 >=% t2 = tcomb ">=" [t1, t2]
 --- Combine a list of SMT-LIB terms using a conjunction
 tand :: [Term] -> Term
 tand = tcomb "and"
+
+--- Logical negation of an SMT-LIB term
+tnot :: Term -> Term
+tnot t = tcomb "not" [t]
 
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT sorts
