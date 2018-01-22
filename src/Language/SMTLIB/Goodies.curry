@@ -127,6 +127,11 @@ instance Num Term where
   abs     = tabs
   fromInt = tint
 
+instance Fractional Term where
+  t1 / t2 = t1 /% t2
+
+  fromFloat = tfloat
+
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT sorts
 --------------------------------------------------------------------------------
