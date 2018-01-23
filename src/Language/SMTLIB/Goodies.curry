@@ -78,6 +78,14 @@ t1 *% t2 = tcomb "*" [t1, t2]
 (/%) :: Term -> Term -> Term
 t1 /% t2 = tcomb "/" [t1, t2]
 
+--- SMT-LIB term `true`
+true :: Term
+true = qtcomb (As "true" boolSort) []
+
+--- SMT-LIB term `false`
+false :: Term
+false = qtcomb (As "false" boolSort) []
+
 --- Constrain two SMT-LIB terms to be equal
 (=%) :: Term -> Term -> Term
 t1 =% t2 = tcomb "=" [t1, t2]
@@ -144,9 +152,17 @@ scomb i ss = SComb i ss
 orderingSort :: Sort
 orderingSort = scomb "Ordering" []
 
+--- Representation of 'Bool' type as SMT-LIB sort
+boolSort :: Sort
+boolSort = scomb "Bool" []
+
 --- Representation of 'Int' type as SMT-LIB sort
 intSort :: Sort
 intSort = scomb "Int" []
+
+--- Representation of 'Float' type as SMT-LIB sort
+floatSort :: Sort
+floatSort = scomb "Real" []
 
 --- Representation of '->' type constructor as SMT-LIB sort constructor
 funSC :: [Sort] -> Sort
