@@ -7,7 +7,7 @@
 module Language.SMTLIB.Scanner (Token (..), scan) where
 
 import Char
-import FiniteMap (FM, listToFM, lookupFM)
+import Data.FiniteMap (FM, listToFM, lookupFM)
 
 data Token   -- symbols
            = LParen
