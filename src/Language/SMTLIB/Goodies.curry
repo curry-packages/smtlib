@@ -2,7 +2,7 @@
 --- This module provides some goodies and utility functions for SMT-LIB.
 ---
 --- @author  Jan Tikovsky
---- @version December 2017
+--- @version January 2018
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Goodies where
 
@@ -54,9 +54,13 @@ forAll vs ss t = case vs of
   [] -> t
   _  -> Forall (zipWith SV (map var2SMT vs) ss) t
 
---- Negate given SMT-LIB term
+--- Negate given numeral SMT-LIB term
 tneg :: Term -> Term
-tneg t = tcomb "not" [t]
+tneg t = tcomb "-" [t]
+
+--- Absolute value of an SMT-LIB term
+tabs :: Term -> Term
+tabs t = tcomb "abs" [t]
 
 --- Add two SMT-LIB terms
 (+%) :: Term -> Term -> Term
@@ -73,6 +77,14 @@ t1 *% t2 = tcomb "*" [t1, t2]
 --- Divide an SMT-LIB term by another one
 (/%) :: Term -> Term -> Term
 t1 /% t2 = tcomb "/" [t1, t2]
+
+--- SMT-LIB term `true`
+true :: Term
+true = qtcomb (As "true" boolSort) []
+
+--- SMT-LIB term `false`
+false :: Term
+false = qtcomb (As "false" boolSort) []
 
 --- Constrain two SMT-LIB terms to be equal
 (=%) :: Term -> Term -> Term
@@ -102,13 +114,31 @@ t1 >=% t2 = tcomb ">=" [t1, t2]
 tand :: [Term] -> Term
 tand = tcomb "and"
 
---- Constrain an SMT variable to be distinct from the given SMT constructors
-noneOf :: Int -> Int -> [(QIdent, [Sort])] -> [Term]
-noneOf idx dv qis = snd $ foldr ineq (idx, []) qis
-  where ineq (qi, ss) (vi, cs) =
-          let vn = vi - length ss
-              vs = [vi, vi - 1 .. vn + 1]
-          in (vn, forAll vs ss (tvar dv /=% qtcomb qi (map tvar vs)) : cs)
+--- Combine a list of SMT-LIB terms using a disjunction
+tor :: [Term] -> Term
+tor = tcomb "or"
+
+--- Logical implication
+(==>) :: Term -> Term -> Term
+t1 ==> t2 = tcomb "=>" [t1, t2]
+
+--- Logical negation of an SMT-LIB term
+tnot :: Term -> Term
+tnot t = tcomb "not" [t]
+
+instance Num Term where
+  t1 + t2 = t1 +% t2
+  t1 - t2 = t1 -% t2
+  t1 * t2 = t1 *% t2
+
+  negate  = tneg
+  abs     = tabs
+  fromInt = tint
+
+instance Fractional Term where
+  t1 / t2 = t1 /% t2
+
+  fromFloat = tfloat
 
 --------------------------------------------------------------------------------
 -- Smart constructors for SMT sorts
@@ -122,9 +152,17 @@ scomb i ss = SComb i ss
 orderingSort :: Sort
 orderingSort = scomb "Ordering" []
 
+--- Representation of 'Bool' type as SMT-LIB sort
+boolSort :: Sort
+boolSort = scomb "Bool" []
+
 --- Representation of 'Int' type as SMT-LIB sort
 intSort :: Sort
 intSort = scomb "Int" []
+
+--- Representation of 'Float' type as SMT-LIB sort
+floatSort :: Sort
+floatSort = scomb "Real" []
 
 --- Representation of '->' type constructor as SMT-LIB sort constructor
 funSC :: [Sort] -> Sort
