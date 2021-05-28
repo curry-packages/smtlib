@@ -8,6 +8,8 @@
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Parser where
 
+import Prelude hiding (many, (*>), (<*>), (<|>), (<*), some)
+
 import           ParserComb
 import           Language.SMTLIB.Scanner
 import qualified Language.SMTLIB.Types   as SMT

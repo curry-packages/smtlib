@@ -11,6 +11,15 @@ infixl 4 <*, *>, <$>, <*>
 
 data Parser tok a = Parser { runParser :: [tok] -> Either String ([tok], a) }
 
+instance Functor (Parser tok) where
+  fmap f (Parser g) = Parser $ \ts -> case g ts of
+                                        Left s -> Left s
+                                        Right (ts', x) -> Right (ts', f x)
+
+instance Applicative (Parser tok) where
+  pure = return
+  af <*> ax = af >>= \f -> fmap f ax
+
 instance Monad (Parser tok) where
   return = yield
 

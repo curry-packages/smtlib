@@ -6,7 +6,7 @@
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Scanner (Token (..), scan) where
 
-import Char
+import Data.Char
 import Data.FiniteMap (FM, listToFM, lookupFM)
 
 data Token   -- symbols
