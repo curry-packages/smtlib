@@ -9,7 +9,7 @@
   "description": "This package includes libraries to represent SMT-LIB scripts in Curry. It provides an abstract representation of the SMT-LIB standard v2.6 as well as libraries for parsing and pretty printing.",
   "dependencies": {
       "base"       : ">= 3.0.0, < 4.0.0",
-      "finite-map" : ">= 3.0.0, < 4.0.0",
+      "containers" : ">= 3.0.0, < 4.0.0",
       "wl-pprint"  : ">= 3.0.0, < 4.0.0"
   },
   "exportedModules": [ "Language.SMTLIB",

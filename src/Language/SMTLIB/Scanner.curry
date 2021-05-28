@@ -7,7 +7,7 @@
 module Language.SMTLIB.Scanner (Token (..), scan) where
 
 import Data.Char
-import Data.FiniteMap (FM, listToFM, lookupFM)
+import Data.Map (Map, fromList, lookup)
 
 data Token   -- symbols
            = LParen
@@ -85,8 +85,8 @@ data Token   -- symbols
            | BVal Bool
   deriving (Eq, Show)
 
-keywords :: FM String Token
-keywords = listToFM (<)
+keywords :: Map String Token
+keywords = fromList
   [ ("as"                    , KW_as)
   , ("BINARY"                , KW_BINARY)
   , ("DECIMAL"               , KW_DECIMAL)
@@ -198,7 +198,7 @@ scanKWOrId cs = let (i, rest) = span (\c -> isAlphaNum c || isSpecial c) cs
                 in kwOrId i : scan rest
 
 kwOrId :: String -> Token
-kwOrId s = maybe (idOrBVal s) id (lookupFM keywords s)
+kwOrId s = maybe (idOrBVal s) id (Data.Map.lookup s keywords)
 
 idOrBVal :: String -> Token
 idOrBVal s = case s of
