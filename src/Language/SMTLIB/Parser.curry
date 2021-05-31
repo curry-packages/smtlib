@@ -21,104 +21,104 @@ parseCmdRsps str = case (runParser (many parseResponse) . scan) str of
   Right (ts,    _) -> Left $ "Incomplete parse: " ++ show ts
 
 parseResponse :: SMTParser SMT.CmdResponse
-parseResponse =  terminal KW_success     *> yield SMT.SuccessRsp
-             <|> terminal KW_sat         *> yield (SMT.CheckSatRsp SMT.Sat)
-             <|> terminal KW_unsat       *> yield (SMT.CheckSatRsp SMT.Unsat)
-             <|> terminal KW_unknown     *> yield (SMT.CheckSatRsp SMT.Unknown)
-             <|> terminal KW_unsupported *> yield SMT.UnsupportedRsp
+parseResponse =  terminal KW_success     *> return SMT.SuccessRsp
+             <|> terminal KW_sat         *> return (SMT.CheckSatRsp SMT.Sat)
+             <|> terminal KW_unsat       *> return (SMT.CheckSatRsp SMT.Unsat)
+             <|> terminal KW_unknown     *> return (SMT.CheckSatRsp SMT.Unknown)
+             <|> terminal KW_unsupported *> return SMT.UnsupportedRsp
              <|> terminal LParen *> parseErrorRsp         <* terminal RParen
              <|> terminal LParen *> parseGetValueRsp      <* terminal RParen
              <|> terminal LParen *> parseGetModelRsp      <* terminal RParen
              <|> terminal LParen *> parseGetAssertionsRsp <* terminal RParen
              <|> terminal LParen *> parseGetAssignmentRsp <* terminal RParen
              <|> terminal LParen *> parseGetInfoRsp       <* terminal RParen
-             <|> yield SMT.EchoRsp <*> parseStr
-             <|> yield SMT.GetOptionRsp <*> parseAttrValue
-             <|> yield SMT.GetProofRsp <*> parseSExpr
+             <|> return SMT.EchoRsp <*> parseStr
+             <|> return SMT.GetOptionRsp <*> parseAttrValue
+             <|> return SMT.GetProofRsp <*> parseSExpr
              -- the get-unsat-assumptions-response and the get-unsat-core-response overlap
---              <|> yield SMT.GetUnsatAssumptionsRsp <*> many parseSym
---              <|> yield SMT.GetUnsatCoreRsp <*> many parseSym
+--              <|> return SMT.GetUnsatAssumptionsRsp <*> many parseSym
+--              <|> return SMT.GetUnsatCoreRsp <*> many parseSym
 
 --- parser for get-assertions-response
 parseGetAssertionsRsp :: SMTParser SMT.CmdResponse
-parseGetAssertionsRsp = yield SMT.GetAssertionsRsp <*> many parseTerm
+parseGetAssertionsRsp = return SMT.GetAssertionsRsp <*> many parseTerm
 
 --- parser for get-assignment-response
 parseGetAssignmentRsp :: SMTParser SMT.CmdResponse
-parseGetAssignmentRsp = yield SMT.GetAssignmentRsp <*> many parseTValPair
+parseGetAssignmentRsp = return SMT.GetAssignmentRsp <*> many parseTValPair
 
 --- parser for a t-valuation pair
 parseTValPair :: SMTParser (SMT.Symbol, Bool)
 parseTValPair =
-  terminal LParen *> yield (,) <*> parseSym <*> parseBool <* terminal RParen
+  terminal LParen *> return (,) <*> parseSym <*> parseBool <* terminal RParen
 
 --- parser for get-info-response
 parseGetInfoRsp :: SMTParser SMT.CmdResponse
-parseGetInfoRsp = yield SMT.GetInfoRsp <*> some parseInfoRsp
+parseGetInfoRsp = return SMT.GetInfoRsp <*> some parseInfoRsp
 
 --- parser for an info response
 parseInfoRsp :: SMTParser SMT.InfoRsp
 parseInfoRsp
   =  terminal Colon *> terminal KW_assertion_stack_levels
-                    *> yield SMT.AssertionStackLevelsRsp <*> parseNum
- <|> terminal Colon *> terminal KW_authors *> yield SMT.AuthorsRsp <*> parseStr
- <|> terminal Colon *> terminal KW_error_behavior *> yield SMT.ErrorBehaviorRsp
+                    *> return SMT.AssertionStackLevelsRsp <*> parseNum
+ <|> terminal Colon *> terminal KW_authors *> return SMT.AuthorsRsp <*> parseStr
+ <|> terminal Colon *> terminal KW_error_behavior *> return SMT.ErrorBehaviorRsp
                    <*> parseErrorBehavior
- <|> terminal Colon *> terminal KW_name *> yield SMT.NameRsp <*> parseStr
- <|> terminal Colon *> terminal KW_reason_unknown *> yield SMT.ReasonUnknownRsp
+ <|> terminal Colon *> terminal KW_name *> return SMT.NameRsp <*> parseStr
+ <|> terminal Colon *> terminal KW_reason_unknown *> return SMT.ReasonUnknownRsp
                    <*> parseReasonUnknown
- <|> terminal Colon *> terminal KW_version *> yield SMT.VersionRsp <*> parseStr
- <|> yield SMT.AttrRsp <*> parseAttribute
+ <|> terminal Colon *> terminal KW_version *> return SMT.VersionRsp <*> parseStr
+ <|> return SMT.AttrRsp <*> parseAttribute
 
 --- parser for error behavior
 parseErrorBehavior :: SMTParser SMT.ErrorBehavior
 parseErrorBehavior
-  =  terminal KW_immediate_exit *> yield SMT.ImmediateExit
- <|> terminal KW_continued_execution *> yield SMT.ContinuedExecution
+  =  terminal KW_immediate_exit *> return SMT.ImmediateExit
+ <|> terminal KW_continued_execution *> return SMT.ContinuedExecution
 
 --- parser for reason unknown
 parseReasonUnknown :: SMTParser SMT.ReasonUnknown
-parseReasonUnknown =  terminal KW_memout *> yield SMT.Memout
-                  <|> terminal KW_incomplete *> yield SMT.Incomplete
-                  <|> yield SMT.SEReason <*> parseSExpr
+parseReasonUnknown =  terminal KW_memout *> return SMT.Memout
+                  <|> terminal KW_incomplete *> return SMT.Incomplete
+                  <|> return SMT.SEReason <*> parseSExpr
 
 --- parser for a get-model-response
 parseGetModelRsp :: SMTParser SMT.CmdResponse
 parseGetModelRsp =
   -- Note: the keyword 'model' is not part of the SMTLib standard (but used in Z3)
-  terminal KW_model *> yield SMT.GetModelRsp <*> many parseModelRsp
+  terminal KW_model *> return SMT.GetModelRsp <*> many parseModelRsp
 
 --- parser for a model response
 parseModelRsp :: SMTParser SMT.ModelRsp
 parseModelRsp
-  =  terminal LParen *> terminal KW_def_fun *> yield SMT.MRFun <*> parseFunDef
+  =  terminal LParen *> terminal KW_def_fun *> return SMT.MRFun <*> parseFunDef
                     <*  terminal RParen
- <|> terminal LParen *> terminal KW_def_fun_rec *> yield SMT.MRFunRec
+ <|> terminal LParen *> terminal KW_def_fun_rec *> return SMT.MRFunRec
                     <*> parseFunDef <* terminal RParen
  <|> terminal LParen *> terminal KW_def_funs_rec
-                     *> yield ((SMT.MRFunsRec .) . zip) <*  terminal LParen
+                     *> return ((SMT.MRFunsRec .) . zip) <*  terminal LParen
                     <*> some parseFunDec <* terminal RParen
                     <*  terminal LParen <*> some parseTerm   <* terminal RParen
                     <*  terminal RParen
 
 --- parser for a function definition
 parseFunDef :: SMTParser SMT.FunDef
-parseFunDef = yield SMT.FunDef <*> parseSym <* terminal LParen
+parseFunDef = return SMT.FunDef <*> parseSym <* terminal LParen
   <*> many parseSortedVar <* terminal RParen <*> parseSort <*> parseTerm
 
 --- parser for a function declaration
 parseFunDec :: SMTParser SMT.FunDec
 parseFunDec
-  = terminal LParen *> yield SMT.FunDec <*> parseSym <* terminal LParen
+  = terminal LParen *> return SMT.FunDec <*> parseSym <* terminal LParen
  <*> many parseSortedVar <* terminal RParen <*> parseSort <* terminal RParen
 
 --- parser for a get-value-response
 parseGetValueRsp :: SMTParser SMT.CmdResponse
-parseGetValueRsp = yield SMT.GetValueRsp <*> some parseValPair
+parseGetValueRsp = return SMT.GetValueRsp <*> some parseValPair
 
 --- parser for an error response
 parseErrorRsp :: SMTParser SMT.CmdResponse
-parseErrorRsp =  terminal KW_error *> yield SMT.ErrorRsp <*> parseStr
+parseErrorRsp =  terminal KW_error *> return SMT.ErrorRsp <*> parseStr
 
 --- parser for a boolean value
 parseBool :: SMTParser Bool
@@ -165,7 +165,7 @@ parseSym = Parser $ \tokens -> case tokens of
 --- parser for a valuation pair
 parseValPair :: SMTParser SMT.ValuationPair
 parseValPair =
-  terminal LParen *> yield (,) <*> parseTerm <*> parseTerm <* terminal RParen
+  terminal LParen *> return (,) <*> parseTerm <*> parseTerm <* terminal RParen
 
 --- parser for terms
 parseTerm :: SMTParser SMT.Term
@@ -184,43 +184,43 @@ parseTerm = Parser $ \tokens -> case tokens of
 parseParenTerm :: SMTParser SMT.Term
 parseParenTerm
      -- parser for negative numbers
-  =  yield (SMT.TConst . SMT.Num) <*> parseNum <* terminal RParen
+  =  return (SMT.TConst . SMT.Num) <*> parseNum <* terminal RParen
      -- parser for qualified identifiers
- <|> terminal KW_as *> yield SMT.TComb <*> (yield SMT.As <*> parseSym
-                   <*> parseSort) <*> yield [] <* terminal RParen
+ <|> terminal KW_as *> return SMT.TComb <*> (return SMT.As <*> parseSym
+                   <*> parseSort) <*> return [] <* terminal RParen
      -- parser for complex terms
- <|> yield SMT.TComb <*> parseQIdent <*> some parseTerm <* terminal RParen
+ <|> return SMT.TComb <*> parseQIdent <*> some parseTerm <* terminal RParen
      -- parser for let terms
- <|> terminal KW_let *> yield SMT.Let <* terminal LParen <*> some parseVarBind
+ <|> terminal KW_let *> return SMT.Let <* terminal LParen <*> some parseVarBind
                     <* terminal RParen <*> parseTerm <* terminal RParen
      -- parser for universally quantified terms
- <|> terminal KW_forall *> yield SMT.Forall <* terminal LParen
+ <|> terminal KW_forall *> return SMT.Forall <* terminal LParen
                        <*> some parseSortedVar <* terminal RParen
                        <*> parseTerm <* terminal RParen
      -- parser for existentially quantified terms
- <|> terminal KW_exists *> yield SMT.Exists <* terminal LParen
+ <|> terminal KW_exists *> return SMT.Exists <* terminal LParen
                        <*> some parseSortedVar <* terminal RParen
                        <*> parseTerm <* terminal RParen
      -- parser for annotated terms
- <|> terminal Bang *> yield SMT.Annot <*> parseTerm <*> some parseAttribute
+ <|> terminal Bang *> return SMT.Annot <*> parseTerm <*> some parseAttribute
                   <* terminal RParen
 
 --- parser for let bindings
 parseVarBind :: SMTParser (SMT.Symbol, SMT.Term)
 parseVarBind =
-  terminal LParen *> yield (,) <*> parseSym <*> parseTerm <* terminal RParen
+  terminal LParen *> return (,) <*> parseSym <*> parseTerm <* terminal RParen
 
 --- parser for sorted variables
 parseSortedVar :: SMTParser SMT.SortedVar
 parseSortedVar =
-  terminal LParen *> yield SMT.SV <*> parseSym <*> parseSort <* terminal RParen
+  terminal LParen *> return SMT.SV <*> parseSym <*> parseSort <* terminal RParen
 
 --- parser for attributes
 parseAttribute :: SMTParser SMT.Attribute
 parseAttribute = Parser $ \tokens -> case tokens of
   []                             -> (runParser eof) tokens
   Colon : (Id s : (RParen : ts)) -> Right (RParen : ts, SMT.AKW (SMT.KW s))
-  Colon : (Id s           : ts)  -> (runParser (yield (SMT.AVal (SMT.KW s))
+  Colon : (Id s           : ts)  -> (runParser (return (SMT.AVal (SMT.KW s))
                                       <*> parseAttrValue)) ts
   t                       : ts   -> (runParser (unexpected t)) ts
 
@@ -230,7 +230,7 @@ parseAttrValue = Parser $ \tokens -> case tokens of
   []          -> (runParser eof) tokens
   Num n  : ts -> Right (ts, SMT.AVConst (SMT.Num n))
   Id  s  : ts -> Right (ts, SMT.AVSym s)
-  LParen : ts -> (runParser (yield SMT.AVSExpr <*> many parseSExpr
+  LParen : ts -> (runParser (return SMT.AVSExpr <*> many parseSExpr
                    <* terminal RParen)) ts
   t      : ts -> (runParser (unexpected t)) ts
 
@@ -240,8 +240,8 @@ parseSExpr = Parser $ \tokens -> case tokens of
   []          -> (runParser eof) tokens
   Num n  : ts -> Right (ts, SMT.SEConst (SMT.Num n))
   Id  s  : ts -> Right (ts, SMT.SESym s)
-  Colon  : ts -> (runParser (yield (SMT.SEKW . SMT.KW) <*> parseSym)) ts
-  LParen : ts -> (runParser (yield SMT.SEList <*> many parseSExpr
+  Colon  : ts -> (runParser (return (SMT.SEKW . SMT.KW) <*> parseSym)) ts
+  LParen : ts -> (runParser (return SMT.SEList <*> many parseSExpr
                    <* terminal RParen)) ts
   t      : ts -> (runParser (unexpected t)) ts
 
@@ -250,7 +250,7 @@ parseQIdent :: SMTParser SMT.QIdent
 parseQIdent = Parser $ \tokens -> case tokens of
   []          -> (runParser eof) tokens
   Id  s  : ts -> Right (ts, SMT.Id s)
-  LParen : ts -> (runParser (terminal KW_as *> yield SMT.As <*> parseSym
+  LParen : ts -> (runParser (terminal KW_as *> return SMT.As <*> parseSym
                    <*> parseSort <* terminal RParen)) ts
   t      : ts -> (runParser (unexpected t)) ts
 
@@ -259,6 +259,6 @@ parseSort :: SMTParser SMT.Sort
 parseSort = Parser $ \tokens -> case tokens of
   []          -> (runParser eof) tokens
   Id s   : ts -> Right (ts, SMT.SComb s [])
-  LParen : ts -> (runParser (yield SMT.SComb <*> parseSym <*> some parseSort
+  LParen : ts -> (runParser (return SMT.SComb <*> parseSym <*> some parseSort
                    <*  terminal RParen)) ts
   t      : ts -> (runParser (unexpected t)) ts

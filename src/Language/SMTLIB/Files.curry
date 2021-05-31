@@ -6,9 +6,9 @@
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Files (writeSMT, writeSMTDump) where
 
-import Directory (createDirectoryIfMissing, getCurrentDirectory)
-import FilePath  ((</>), (<.>), takeBaseName)
-import Time      (getLocalTime, calendarTimeToString)
+import System.Directory (createDirectoryIfMissing, getCurrentDirectory)
+import System.FilePath  ((</>), (<.>), takeBaseName)
+import Data.Time      (getLocalTime, calendarTimeToString)
 
 import Language.SMTLIB.Pretty (showSMT)
 import Language.SMTLIB.Types
