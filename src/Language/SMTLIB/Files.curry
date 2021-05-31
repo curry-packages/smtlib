@@ -2,7 +2,7 @@
 --- This module provides some file operations for SMT-LIB.
 ---
 --- @author  Jan Tikovsky
---- @version December 2017
+--- @version May 2021
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Files (writeSMT, writeSMTDump) where
 

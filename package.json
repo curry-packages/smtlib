@@ -2,6 +2,7 @@
   "name": "smtlib",
   "version": "3.0.0",
   "author": "Jan Rasmus Tikovsky <jrt@informatik.uni-kiel.de>",
+  "maintainer": "Niels Bunkenburg <nbu@informatik.uni-kiel.de>",
   "synopsis": "Implementation of the SMT-LIB standard for Curry",
   "category": [ "Verification" ],
   "license": "BSD-3-Clause",

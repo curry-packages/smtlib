@@ -1,8 +1,8 @@
 --- ----------------------------------------------------------------------------
 --- This module provides a simple scanner for the SMT-LIB language (v2.6).
 ---
---- @author  Jan Tikovsky
---- @version October 2017
+--- @author  Jan Tikovsky (with changes by Niels Bunkenburg)
+--- @version May 2021
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Scanner (Token (..), scan) where
 

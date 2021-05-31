@@ -1,8 +1,8 @@
 --- ----------------------------------------------------------------------------
 --- This module provides some simple parser combinators.
 ---
---- @author  Jan Tikovsky
---- @version October 2017
+--- @author  Jan Tikovsky (with changes by Niels Bunkenburg)
+--- @version May 2021
 --- ----------------------------------------------------------------------------
 module ParserComb where
 

@@ -3,8 +3,8 @@
 --- Currently there are only parsers for a subset of the language,
 --- namely command responses.
 ---
---- @author  Jan Tikovsky
---- @version October 2017
+--- @author  Jan Tikovsky (with changes by Niels Bunkenburg)
+--- @version May 2021
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Parser where
 
