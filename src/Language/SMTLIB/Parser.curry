@@ -4,7 +4,7 @@
 --- namely command responses.
 ---
 --- @author  Jan Tikovsky (with changes by Niels Bunkenburg)
---- @version May 2021
+--- @version August 2021
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Parser where
 
@@ -169,7 +169,7 @@ parseValPair =
 
 --- parser for terms
 parseTerm :: SMTParser SMT.Term
-parseTerm = Parser $ \tokens -> case tokens of
+parseTerm = SMT.TConst . SMT.Str <$> parseStr <|> (Parser $ \tokens -> case tokens of
   []          -> (runParser eof) tokens
   Num  n : ts -> Right (ts, SMT.TConst (SMT.Num n))
   BVal b : ts -> let s = case b of
@@ -178,7 +178,7 @@ parseTerm = Parser $ \tokens -> case tokens of
                  in Right (ts, SMT.TComb (SMT.Id s) [])
   Id   s : ts -> Right (ts, SMT.TComb (SMT.Id s) [])
   LParen : ts -> (runParser parseParenTerm) ts
-  t      : ts -> (runParser (unexpected t)) ts
+  t      : ts -> (runParser (unexpected t)) ts)
 
 --- parser for parenthesized terms
 parseParenTerm :: SMTParser SMT.Term

@@ -2,7 +2,7 @@
 --- This module provides a pretty printer for the SMT-LIB language (v2.6).
 ---
 --- @author  Jan Tikovsky
---- @version December 2017
+--- @version August 2021
 --- ----------------------------------------------------------------------------
 module Language.SMTLIB.Pretty where
 
@@ -27,7 +27,7 @@ instance Pretty Keyword where
 instance Pretty SpecConstant where
   pretty (Num n) = int n
   pretty (Dec f) = float f
-  pretty (Str s) = text s
+  pretty (Str s) = dquotes $ text s
 
 instance Pretty SExpr where
   pretty (SEConst  c) = pretty c
