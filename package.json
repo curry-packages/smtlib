@@ -24,7 +24,7 @@
                        "Language.SMTLIB.Scanner",
                        "Language.SMTLIB.Types" ],
   "source": {
-     "git": "https://git.ps.informatik.uni-kiel.de/curry-packages/smtlib.git",
+     "git": "https://github.com/curry-packages/smtlib.git",
      "tag": "$version"
   }
 }
